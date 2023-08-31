@@ -5,13 +5,15 @@
       src="~assets/quasar-logo-vertical.svg"
       style="width: 200px; height: 200px"
     >
+
+    <div>
+      Hello {{ user.email }}
+    </div>
   </q-page>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script setup>
+import useAuthUser from 'src/composables/useAuthUser';
 
-export default defineComponent({
-  name: 'IndexPage'
-})
+const { user } = useAuthUser()
 </script>
