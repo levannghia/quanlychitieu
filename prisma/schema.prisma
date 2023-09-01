@@ -9,3 +9,25 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Categories {
+  id         Int         @id @default(autoincrement())
+  userId     String      @db.Uuid
+  name       String
+  icon       String
+  type       boolean
+  created_at DateTime?   @default(now()) @db.Timestamptz(6)
+  note  Notes[]
+}
+
+model Notes {
+  id          Int         @id @default(autoincrement())
+  userId      String      @db.Uuid
+  categoryId  Int
+  price       Int
+  description String
+  time        DateTime?
+  created_at  DateTime?   @default(now()) @db.Timestamptz(6)
+  category    Categories  @relation(fields: [categoryId], references: [id])
+}
+

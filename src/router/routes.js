@@ -13,8 +13,22 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/IndexPage.vue') }
-    ]
+      { path: '', name: 'home', component: () => import('pages/IndexPage.vue') },
+    ],
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/category',
+    component: () => import('layouts/CategoryLayout.vue'),
+    children: [
+      { path: '', name: 'category.index', component: () => import('src/pages/CategoryPage.vue') },
+      { path: 'create', name: 'category.create', component: () => import('src/pages/CategoryCreatePage.vue') }
+    ],
+    meta: {
+      requiresAuth: true
+    }
   },
 
   // Always leave this as last one,

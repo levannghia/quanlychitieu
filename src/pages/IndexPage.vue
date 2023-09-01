@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center">
+  <q-page class="q-pa-md">
     <img
       alt="Quasar logo"
       src="~assets/quasar-logo-vertical.svg"

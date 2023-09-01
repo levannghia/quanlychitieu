@@ -7,7 +7,7 @@
         <q-input filled v-model="form.name" label="Họ và tên *" lazy-rules
           :rules="[val => val && val.length > 0 || 'Vui lòng họ tên']" />
 
-        <q-input filled v-model="form.email" label="Email *" hint="example@gmail.com" lazy-rules
+        <q-input filled v-model="form.email" label="Email *" hint="example@gmail.com" lazy-rules type="email"
           :rules="[val => val && val.length > 0 || 'Vui lòng nhập email']" />
 
         <q-input filled type="password" v-model="form.password" label="Mật khẩu *" lazy-rules :rules="[
