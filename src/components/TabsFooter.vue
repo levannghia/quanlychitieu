@@ -1,5 +1,5 @@
 <template>
-  <q-tabs v-model="tab" class="text-primary">
+  <q-tabs v-model="tabFooter" class="text-primary">
     <q-route-tab
       :to="{ name: 'category.index' }"
       name="category"
@@ -12,4 +12,6 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+const tabFooter = ref('home');
 </script>

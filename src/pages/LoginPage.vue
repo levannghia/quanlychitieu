@@ -89,7 +89,13 @@ const loginSocial = async (prov) => {
 };
 
 const handleLogin = async () => {
-  await login(form.value);
-  router.push("/");
+  try {
+    await login(form.value);
+    router.push("/");
+  } catch (error) {
+    alert(error.message)
+    form.value.password = '';
+  }
+  
 };
 </script>

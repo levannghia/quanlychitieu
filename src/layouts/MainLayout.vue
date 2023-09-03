@@ -86,7 +86,6 @@ const $q = useQuasar();
 
 const mobileData = ref(false);
 const bluetooth = ref(false);
-const tab = ref(null);
 
 const linksList = [
   {

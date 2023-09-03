@@ -7,6 +7,10 @@
           v-model="name"
           label="Tên danh mục"
           counter
+          lazy-rules
+          :rules="[
+            (val) => (val && val.length > 0) || 'Vui lòng nhập tên danh mục',
+          ]"
         >
           <template v-slot:prepend>
             <q-icon name="rate_review" />
@@ -17,25 +21,67 @@
 
           <template v-slot:hint> Field hint </template>
         </q-input>
-
+        <q-select
+          color="primary"
+          filled
+          v-model="typeCategory"
+          :options="options"
+          label="Loại danh mục"
+        >
+          <template v-slot:prepend>
+            <q-icon name="category" />
+          </template>
+        </q-select>
         <div>
           <q-btn
-            label="Đăng nhập"
+            label="SAVE"
             type="submit"
             color="primary"
             class="full-width"
           />
         </div>
-        {{ categoryStore.type }}
       </q-form>
     </div>
   </q-page>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useCategoryStore } from 'src/stores/category-store';
-const categoryStore = useCategoryStore()
+import { onBeforeMount, onMounted, onUnmounted, ref } from "vue";
+import { useCategoryStore } from "src/stores/category-store"
+import useAuthUser from "src/composables/useAuthUser"
 
+const categoryStore = useCategoryStore()
+const { user } = useAuthUser()
+
+console.log(user.value);
 const name = ref(null);
+let lable = categoryStore.type === true ? "Khoảng thu" : "Khoảng chi";
+const typeCategory = ref({
+  label: lable,
+  value: categoryStore.type,
+});
+
+
+onMounted(() => {
+  categoryStore.bcrumb = 'Thêm danh mục'
+})
+
+let options = [
+  {
+    label: "Khoảng thu",
+    value: true,
+  },
+  {
+    label: "khoảng chi",
+    value: false,
+  },
+];
+
+// onBeforeMount(() => {
+//   prisma.disconnect();
+// })
+
+onUnmounted(() => {
+  categoryStore.bcrumb = ''
+})
 </script>
