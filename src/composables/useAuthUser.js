@@ -22,9 +22,8 @@ export default function useAuthUser() {
     try {
       const { user, error } = await supabase.auth.signInWithOAuth({
         provider: provider,
-        redirectTo: window.location.origin
+        // redirectTo: window.location.origin + '/auth/login'
       })
-
       if (error) throw error
       return user
     } catch (error) {
