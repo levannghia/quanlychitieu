@@ -16,17 +16,37 @@ export default function useApi() {
             .select()
             .eq('userId', userId)
             .range(page * pageSize, (page + 1) * pageSize - 1)
-            .order('created_at', { ascending: true }); // Thay thế bằng tên cột bạn muốn sắp xếp
+            .order('created_at', { ascending: false }); // Thay thế bằng tên cột bạn muốn sắp xếp
 
         if (error) {
             throw error;
         }
-        console.log(data);
         return data;
+    }
 
+    const removeById = async (table, id) => {
+      const { data, error } = await supabase
+      .from(table)
+      .delete()
+      .match({id: id});
+
+      if(error) throw error
+      return data;
+    }
+
+    const getById = async (table, id) => {
+      const { data, error } = await supabase
+      .from(table)
+      .select()
+      .eq('id', id);
+      if (error) throw error
+
+      return data[0]
     }
 
     return {
-        fetchPaginatedData
+        fetchPaginatedData,
+        getById,
+        removeById,
     }
 }

@@ -1,15 +1,10 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header class="bg-white">
-      <q-toolbar class="text-primary">
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
+    <q-header :class="route.name == 'home' ? 'bg-primary' : 'bg-white'">
+      <q-toolbar :class="route.name == 'home' ? 'text-white' : 'text-primary'">
+        <q-avatar>
+          <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
+        </q-avatar>
 
         <q-toolbar-title> Quasar App </q-toolbar-title>
 
@@ -31,14 +26,7 @@
 
                 <div class="text-subtitle1 q-mt-md q-mb-xs">{{ reEmail }}</div>
 
-                <q-btn
-                  @click="handleLogout()"
-                  color="primary"
-                  label="Logout"
-                  push
-                  size="sm"
-                  v-close-popup
-                />
+                <q-btn @click="handleLogout()" color="primary" label="Logout" push size="sm" v-close-popup />
               </div>
             </div>
           </q-btn-dropdown>
@@ -50,11 +38,7 @@
       <q-list>
         <q-item-label header> Essential Links </q-item-label>
 
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+        <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
       </q-list>
     </q-drawer>
 
@@ -76,11 +60,12 @@ import { computed, onMounted, ref } from "vue";
 import EssentialLink from "components/EssentialLink.vue";
 import TabsFooter from 'components/TabsFooter.vue'
 import useAuthUser from "src/composables/useAuthUser";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useQuasar } from "quasar";
 
 const { user, logout } = useAuthUser();
 const router = useRouter();
+const route = useRoute();
 const reEmail = user.value.email.split("@")[0];
 const $q = useQuasar();
 
@@ -148,7 +133,5 @@ const handleLogout = async () => {
     router.replace({ name: "login" });
   });
 };
-const toggleLeftDrawer = () => {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
-};
+
 </script>

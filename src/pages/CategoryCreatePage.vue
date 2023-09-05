@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-md">
+  <q-page padding>
     <div class="q-pa-md q-mx-auto" style="max-width: 400px">
       <q-form @submit.prevent="handleCreateCategory" class="q-gutter-md">
         <q-input bottom-slots v-model="name" label="Tên danh mục" counter lazy-rules :rules="[
@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { onBeforeMount, onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import { useCategoryStore } from "src/stores/category-store"
 import useAuthUser from "src/composables/useAuthUser"
 import useSupabase from "src/boot/supabase"
@@ -81,9 +81,16 @@ const handleCreateCategory = async () => {
   }
 }
 
-// onBeforeMount(() => {
-//   prisma.disconnect();
-// })
+watch(
+  () => typeCategory.value.value,
+  () => {
+    if (typeCategory.value.value) {
+      categoryStore.type = true;
+    }else{
+      categoryStore.type = false;
+    }
+  }
+);
 
 onUnmounted(() => {
   categoryStore.bcrumb = ''
