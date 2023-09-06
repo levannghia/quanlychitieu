@@ -44,6 +44,15 @@ export default function useApi() {
       return data[0]
     }
 
+    const updateById = async (table, form) => {
+      const { data, error } = await supabase
+        .from(table)
+        .update({ ...form })
+        .match({ id: form.id })
+      if (error) throw error
+      return data
+    }
+
     return {
         fetchPaginatedData,
         getById,

@@ -71,7 +71,9 @@ import useApi from "src/composables/useApi";
 import useNotify from "src/composables/useNotify";
 import useAuthUser from "src/composables/useAuthUser"
 import { useQuasar } from 'quasar'
+import useSupabase from 'src/boot/supabase'
 
+const { supabase } = useSupabase()
 const { fetchPaginatedData, getById, removeById } = useApi();
 const { notifyError, notifySuccess } = useNotify();
 const { user } = useAuthUser();
@@ -81,14 +83,11 @@ const categoryStore = useCategoryStore();
 const listCategory = ref([]);
 const $q = useQuasar();
 const table = "Categories";
-const form = ref({
-  name: ''
-})
 
 onBeforeMount(() => {
-  if(categoryStore.type){
+  if (categoryStore.type) {
     tab.value = "mails"
-  }else{
+  } else {
     tab.value = "alarms"
   }
 })
@@ -110,17 +109,40 @@ const handleRemoveCategory = async (category) => {
   }
 }
 
-const handleUpdateCategort = async (category) => {
-  try {
-
-  } catch (error) {
-    notifyError(error.message)
-  }
-}
-
 const handleGetCategory = async (category) => {
-  const data = await getById(table, category.id);
-  console.log(data);
+  $q.dialog({
+    title: `Edit (${category.name})`,
+    // message: 'Tên danh mục? (Minimum 6 characters)',
+    prompt: {
+      model: `${category.name}`,
+      isValid: val => val.length > 2, // << here is the magic
+      type: 'text' // optional
+    },
+    cancel: true,
+    persistent: true
+  }).onOk(async (name) => {
+    try {
+      const { data, error } = await supabase
+        .from(table)
+        .update({ name: name })
+        .match({ id: category.id })
+        .select()
+      if (error) throw error
+      $q.loading.show()
+      if(data){
+        setTimeout(() => {
+          $q.loading.hide()
+        }, 800)
+
+        setTimeout(() => {
+          handleListCategory();
+        }, 900)
+      }
+    } catch (error) {
+      notifyError(error.message)
+    }
+
+  })
 }
 
 const handleListCategory = async () => {

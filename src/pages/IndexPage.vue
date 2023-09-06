@@ -9,7 +9,7 @@
         <div  class="text-right">
           <q-btn icon="event" round color="primary">
             <q-popup-proxy
-              @before-show="updateProxy"
+              @before-show="filterDate"
               cover
               transition-show="scale"
               transition-hide="scale"

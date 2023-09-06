@@ -14,6 +14,7 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', name: 'home', component: () => import('pages/IndexPage.vue') },
+      { path: '/note-create', name: 'note.create', component: () => import('src/pages/NoteCreatePage.vue') },
     ],
     meta: {
       requiresAuth: true
