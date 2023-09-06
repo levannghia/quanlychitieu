@@ -45,7 +45,7 @@ const form = ref({
 
 watchEffect(() => {
     if (isLoggedIn) {
-        return router.push('/')
+        return router.push({name: 'home'})
     }
 })
 

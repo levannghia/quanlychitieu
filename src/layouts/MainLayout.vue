@@ -37,10 +37,6 @@
     <q-page-container>
       <router-view />
     </q-page-container>
-
-    <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn :to="{name: 'note.create'}" fab icon="add" color="primary" />
-    </q-page-sticky>
     <q-footer class="bg-white">
       <tabs-footer></tabs-footer>
     </q-footer>

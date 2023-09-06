@@ -41,6 +41,9 @@
         </q-item>
       </q-virtual-scroll>
     </div>
+     <q-page-sticky position="bottom-right" :offset="[18, 18]">
+      <q-btn :to="{name: 'note.create'}" fab icon="add" color="primary" />
+    </q-page-sticky>
   </q-page>
 </template>
 
@@ -80,8 +83,6 @@ function getCurrentDay(){
     const formattedDate = `${day}-${month}-${year}`;
     dateNow.value = formattedDate
 }
-
-console.log(filterDate.value);
 
 const onVirtualScroll = ({ index }) => {
   virtualListIndex.value = index;
