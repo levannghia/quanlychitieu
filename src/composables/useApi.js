@@ -24,6 +24,20 @@ export default function useApi() {
         return data;
     }
 
+
+    const fetchListData = async (table, userId) => {
+      const { data, error } = await supabase
+          .from(table)
+          .select()
+          .eq('userId', userId)
+          .order('created_at', { ascending: false }); // Thay thế bằng tên cột bạn muốn sắp xếp
+
+      if (error) {
+          throw error;
+      }
+      return data;
+  }
+
     const removeById = async (table, id) => {
       const { data, error } = await supabase
       .from(table)
@@ -57,5 +71,6 @@ export default function useApi() {
         fetchPaginatedData,
         getById,
         removeById,
+        fetchListData,
     }
 }

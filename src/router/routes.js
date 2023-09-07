@@ -1,3 +1,4 @@
+// import { useUserStore } from "src/stores/user-store"
 
 const routes = [
   {
@@ -11,6 +12,9 @@ const routes = [
   },
   {
     path: '/',
+    // beforeEnter: (to, from, next) => {
+    //   useUserStore().id ? next() : next('/auth/login')
+    // },
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', name: 'home', component: () => import('pages/IndexPage.vue') },
