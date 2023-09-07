@@ -525,6 +525,7 @@ watchEffect(() => {
     transform: scale3d(1, 1, 1);
   }
 }
+
 @-webkit-keyframes fadeIn {
   from {
     opacity: 0;
