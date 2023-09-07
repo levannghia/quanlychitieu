@@ -1,115 +1,182 @@
 <template>
-<div id="app_cal" v-cloak>
-	<div id="calculator">
-		<div class="screen-container">
-			<div class="result">
-				<transition name="slide-fade">
-				<div class="number" :style="{fontSize : fontSize + 'px'}" v-if="tempResult !== ''"  v-cloak></div>
-				</transition>
-			</div>
-			<div class="calculation">
-				<div class="number" v-cloak></div>
-			</div>
-		</div>
-		<div class="btn-container">
-			<div class="oper-container">
-					<div class="btn" id="clear" @click="clear()">
-						<div class="number">AC</div>
-					</div>
-					<div class="btn operations divide" @click="append('/')">
-						<div class="number">÷</div>
-					</div>
-					<div class="btn operations multiplication" @click="append('*')">
-						<div class="number">×</div>
-					</div>
-					<div class="btn operations plus" @click="append('+')">
-						<div class="number">+</div>
-					</div>
-					<div class="btn operations less" @click="append('-')">
-						<div class="number">-</div>
-					</div>
-			</div>
+  <div id="app_cal" v-cloak>
+    <div id="calculator">
+      <!-- <div class="screen-container">
+        <div class="result">
+          <transition name="slide-fade">
+            <div
+              class="number"
+              :style="{ fontSize: fontSize + 'px' }"
+              v-if=" calculatorStore.tempResult !== ''"
+              v-cloak
+            >
+              {{ calculatorStore.tempResult }}
+            </div>
+          </transition>
+        </div>
+        <div class="calculation">
+          <div class="number" v-cloak>
+            {{ repCalculation }}
+          </div>
+        </div>
+      </div> -->
+      <div class="btn-container">
+        <div class="oper-container">
+          <div class="btn" id="clear" @click="clear()">
+            <div class="number">AC</div>
+          </div>
+          <div class="btn operations divide" @click="append('/')">
+            <div class="number">÷</div>
+          </div>
+          <div class="btn operations multiplication" @click="append('*')">
+            <div class="number">×</div>
+          </div>
+          <div class="btn operations plus" @click="append('+')">
+            <div class="number">+</div>
+          </div>
+          <div class="btn operations less" @click="append('-')">
+            <div class="number">-</div>
+          </div>
+        </div>
 
-			<div class="row">
-				<div class="btn" @click="append('7')">
-					<div class="number">7</div>
-				</div>
-				<div class="btn" @click="append('8')">
-					<div class="number">8</div>
-				</div>
-				<div class="btn" @click="append('9')">
-					<div class="number">9</div>
-				</div>
-<!-- 				<div class="btn" @click="append('/')">÷</div> -->
-			</div>
-			<div class="row">
-				<div class="btn" @click="append('4')">
-					<div class="number">4</div>
-				</div>
-				<div class="btn" @click="append('5')">
-					<div class="number">5</div>
-				</div>
-				<div class="btn" @click="append('6')">
-					<div class="number">6</div>
-				</div>
-<!-- 				<div class="btn" @click="append('*')">×</div> -->
-
-			</div>
-			<div class="row">
-				<div class="btn" @click="append('1')">
-					<div class="number">1</div>
-				</div>
-				<div class="btn" @click="append('2')">
-					<div class="number">2</div>
-				</div>
-				<div class="btn" @click="append('3')">
-					<div class="number">3</div>
-				</div>
-<!-- 				<div class="btn" @click="append('-')">-</div> -->
-			</div>
-			<div class="row">
-				<div class="btn" id="dot" @click="append('.')">
-					<div class="number">.</div>
-				</div>
-				<div class="btn" @click="append('0')">
-					<div class="number">0</div>
-				</div>
-								<div class="btn">
-					<div class="number"></div>
-				</div>
-				<div class="btn" id="result" @click="getResult()">
-					<div class="number">=</div>
-				</div>
-<!-- 				<div class="btn" @click="append('+')">+</div> -->
-			</div>
-		</div>
-	</div>
-</div>
-
+        <div class="row">
+          <div class="btn" @click="append('7')">
+            <div class="number">7</div>
+          </div>
+          <div class="btn" @click="append('8')">
+            <div class="number">8</div>
+          </div>
+          <div class="btn" @click="append('9')">
+            <div class="number">9</div>
+          </div>
+          <!-- 				<div class="btn" @click="append('/')">÷</div> -->
+        </div>
+        <div class="row">
+          <div class="btn" @click="append('4')">
+            <div class="number">4</div>
+          </div>
+          <div class="btn" @click="append('5')">
+            <div class="number">5</div>
+          </div>
+          <div class="btn" @click="append('6')">
+            <div class="number">6</div>
+          </div>
+          <!-- 				<div class="btn" @click="append('*')">×</div> -->
+        </div>
+        <div class="row">
+          <div class="btn" @click="append('1')">
+            <div class="number">1</div>
+          </div>
+          <div class="btn" @click="append('2')">
+            <div class="number">2</div>
+          </div>
+          <div class="btn" @click="append('3')">
+            <div class="number">3</div>
+          </div>
+          <!-- 				<div class="btn" @click="append('-')">-</div> -->
+        </div>
+        <div class="row">
+          <div class="btn" id="dot" @click="append('.')">
+            <div class="number">.</div>
+          </div>
+          <div class="btn" @click="append('0')">
+            <div class="number">0</div>
+          </div>
+          <div class="btn">
+            <div class="number"></div>
+          </div>
+          <div class="btn" id="result" @click="getResult()">
+            <div class="number">=</div>
+          </div>
+          <!-- 				<div class="btn" @click="append('+')">+</div> -->
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, onMounted, ref, watch, watchEffect } from "vue";
+import { useCalculatorStore } from "src/stores/calculator-store";
 
-const tempResult = ref(false)
-const fontSize = ref(null)
+const calculatorStore = useCalculatorStore();
 
-function append(tring){
-
+function append(value) {
+  calculatorStore.calculation += value.toString();
 }
 
 function getResult() {
-
+  if (calculatorStore.tempResult != "") {
+    calculatorStore.calculation = calculatorStore.tempResult;
+    //this.tempResult = ''
+  }
 }
+
+function clear() {
+  calculatorStore.calculation = "";
+  calculatorStore.tempResult = "";
+}
+
+function backspace() {
+  calculatorStore.calculation = calculatorStore.calculation.slice(0, -1);
+}
+onMounted(() => {
+  let btns = document.querySelectorAll(".btn");
+  for (let btn of btns) {
+    btn.addEventListener("click", function () {
+      this.classList.add("animate");
+      this.classList.add("resetappearanim");
+    });
+    btn.addEventListener("animationend", function () {
+      this.classList.remove("animate");
+    });
+  }
+});
+
+const result = computed(() => {
+  if (!isNaN(calculatorStore.calculation.slice(-1))) return eval(calculatorStore.calculation);
+  else return eval(calculatorStore.calculation.slice(0, -1));
+});
+
+const fontSize = computed(() => {
+  return 50 - calculatorStore.tempResult.length * 1.25;
+});
+
+// const hugeNumber = computed(() => {
+//   let parts = calculatorStore.calculation.toString().split(".");
+//   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+//   return parts.join(".");
+// });
+
+const repCalculation = computed(() => {
+  return calculatorStore.calculation
+    .replaceAll("*", "x")
+    .replaceAll("x", " x ")
+    .replaceAll("/", " / ")
+    .replaceAll("+", " + ")
+    .replaceAll("-", " - ");
+});
+
+watchEffect(() => {
+  if (
+    calculatorStore.calculation !== "" &&
+    !isNaN(calculatorStore.calculation.slice(-1)) &&
+    calculatorStore.calculation != result
+  ) {
+    calculatorStore.tempResult = result.value.toString();
+  }
+});
+
+
 </script>
 
 <style scoped>
-body {
+/* body {
   height: 100vh;
   width: 100vw;
   background: #1939f6;
   overflow: hidden;
-}
+} */
 
 * {
   box-sizing: border-box;
@@ -120,21 +187,21 @@ body {
   height: 100%;
   display: flex;
   font-family: "Roboto", sans-serif;
-  font-weight: 300;
+  /* font-weight: 300; */
   font-size: 24px;
 }
 #app_cal #calculator {
   opacity: 0;
   -webkit-animation: 1s bounceIn;
-          animation: 1s bounceIn;
+  animation: 1s bounceIn;
   -webkit-animation-fill-mode: forwards;
-          animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
   margin: 10px;
   border-radius: 8px;
   color: #ffffff;
   box-shadow: 10px 10px 50px rgba(0, 0, 0, 0.5);
   margin: auto;
-  height: 540px;
+  height: 300px;
   width: 300px;
   background: #191b1d;
 }
@@ -165,7 +232,7 @@ body {
 }
 #app_cal #calculator .btn-container {
   width: 100%;
-  height: 62%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -174,16 +241,16 @@ body {
   z-index: 10;
   opacity: 0;
   -webkit-animation: 1s bounceIn;
-          animation: 1s bounceIn;
+  animation: 1s bounceIn;
   -webkit-animation-delay: 0.5s;
-          animation-delay: 0.5s;
+  animation-delay: 0.5s;
   -webkit-animation-fill-mode: forwards;
-          animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
   position: absolute;
   width: 50px;
-  left: -25px;
+  left: -60px;
   box-shadow: 10px 10px 50px rgba(0, 0, 0, 0.5);
-  top: -100px;
+  top: 0px;
 }
 #app_cal #calculator .btn-container .oper-container .btn {
   position: static;
@@ -200,7 +267,7 @@ body {
 }
 #app_cal #calculator .btn-container .oper-container .btn#clear.animate {
   -webkit-animation: fade 0.12s ease-in-out;
-          animation: fade 0.12s ease-in-out;
+  animation: fade 0.12s ease-in-out;
   animation-direction: reverse;
 }
 #app_cal #calculator .btn-container .oper-container .btn#clear {
@@ -237,11 +304,11 @@ body {
 #app_cal #calculator .btn-container .row .btn .number {
   opacity: 0;
   -webkit-animation: 1s fadeIn;
-          animation: 1s fadeIn;
+  animation: 1s fadeIn;
   -webkit-animation-delay: 0.5s;
-          animation-delay: 0.5s;
+  animation-delay: 0.5s;
   -webkit-animation-fill-mode: forwards;
-          animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
   margin: auto;
 }
 #app_cal #calculator .btn-container .row .btn:nth-child(1) {
@@ -252,7 +319,7 @@ body {
 }
 #app_cal #calculator .btn-container .row .btn.animate {
   -webkit-animation: fade 0.12s ease-in-out;
-          animation: fade 0.12s ease-in-out;
+  animation: fade 0.12s ease-in-out;
 }
 #app_cal #calculator .btn-container .row .btn#result {
   position: absolute;
@@ -260,22 +327,22 @@ body {
   bottom: -12px;
   width: calc(33% * 1.25);
   height: calc(100% * 1.25);
-  background: #1939f6;
+  background: var(--q-primary);
   border-bottom-right-radius: 8px;
   border: 0.5px rgba(0, 0, 0, 0.0001);
 }
 #app_cal #calculator .btn-container .row .btn#result:not(.resetappearanim) {
   opacity: 0;
   -webkit-animation: 1s bounceIn;
-          animation: 1s bounceIn;
+  animation: 1s bounceIn;
   -webkit-animation-delay: 0.5s;
-          animation-delay: 0.5s;
+  animation-delay: 0.5s;
   -webkit-animation-fill-mode: forwards;
-          animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
 }
 #app_cal #calculator .btn-container .row .btn#result.animate {
   -webkit-animation: fade 0.12s ease-in-out;
-          animation: fade 0.12s ease-in-out;
+  animation: fade 0.12s ease-in-out;
   animation-direction: reverse;
 }
 #app_cal #calculator .btn-container .row .btn#dot {
@@ -286,7 +353,7 @@ body {
 }
 #app_cal #calculator .btn-container .btn.operations.animate {
   -webkit-animation: fadeThird 0.12s ease-in-out;
-          animation: fadeThird 0.12s ease-in-out;
+  animation: fadeThird 0.12s ease-in-out;
   animation-direction: reverse;
 }
 #app_cal #calculator .btn-container .btn.operations.divide {
@@ -341,7 +408,12 @@ body {
   }
 }
 @-webkit-keyframes bounceIn {
-  from, 20%, 40%, 60%, 80%, to {
+  from,
+  20%,
+  40%,
+  60%,
+  80%,
+  to {
     -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
     animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
   }
@@ -368,7 +440,12 @@ body {
   }
 }
 @keyframes bounceIn {
-  from, 20%, 40%, 60%, 80%, to {
+  from,
+  20%,
+  40%,
+  60%,
+  80%,
+  to {
     -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
     animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
   }
@@ -395,7 +472,12 @@ body {
   }
 }
 @-webkit-keyframes bounce {
-  from, 20%, 40%, 60%, 80%, to {
+  from,
+  20%,
+  40%,
+  60%,
+  80%,
+  to {
     -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
     animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
   }
@@ -417,7 +499,12 @@ body {
   }
 }
 @keyframes bounce {
-  from, 20%, 40%, 60%, 80%, to {
+  from,
+  20%,
+  40%,
+  60%,
+  80%,
+  to {
     -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
     animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
   }
@@ -462,7 +549,7 @@ body {
 
 @media screen and (max-width: 500px) {
   #app_cal {
-    transform: scale(0.8) translateY(-50px);
+    transform: scale(0.8) translateY(40%);
   }
 }
 *::-moz-selection {

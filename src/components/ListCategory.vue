@@ -127,7 +127,6 @@ onMounted(() => {
 
 const onVirtualScroll = ({ index }) => {
   virtualListIndex.value = index;
-  console.log("test");
 };
 
 onBeforeUnmount(() => {
