@@ -9,7 +9,7 @@
         <div class="text-right">
           <q-btn icon="event" round color="primary">
             <q-popup-proxy @before-show="filterDate" cover transition-show="scale" transition-hide="scale">
-              <q-date v-model="filterDate" range mask="DD-MM-YYYY">
+              <q-date v-model="filterDate" range mask="YYYY-MM-DD">
                 <div class="row items-center justify-end q-gutter-sm">
                   <q-btn label="Cancel" color="primary" flat v-close-popup />
                   <q-btn label="OK" color="primary" flat @click="save" v-close-popup />
@@ -24,25 +24,21 @@
       </div>
     </div>
     <div class="q-pa-sm">
-      <div class="q-pa-md row justify-center">
-        <q-input style="min-width: 10em" type="number" v-model.number="virtualListIndex" :min="0" :max="9999"
-          label="Scroll to index" input-class="text-right" outlined />
-        <q-btn class="q-ml-sm" label="Go" no-caps color="primary" @click="executeScroll" />
-      </div>
-
-      <q-separator />
-
-      <q-virtual-scroll ref="virtualListRef" style="max-height: 100vh" component="q-list" :items="heavyList" separator
-        @virtual-scroll="onVirtualScroll" v-slot="{ item, index }">
-        <q-item :key="index" dense :class="{ 'bg-black text-white': index === virtualListIndex }">
-          <q-item-section>
-            <q-item-label> #{{ index }} - {{ item.label }} </q-item-label>
-          </q-item-section>
-        </q-item>
-      </q-virtual-scroll>
+      <q-infinite-scroll @load="onLoad" :offset="250">
+        <div v-for="(item, index) in items" :key="index" class="caption">
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum repellendus sit voluptate voluptas eveniet
+            porro. Rerum blanditiis perferendis totam, ea at omnis vel numquam exercitationem aut, natus minima, porro
+            labore.</p>
+        </div>
+        <template v-slot:loading>
+          <div class="row justify-center q-my-md">
+            <q-spinner-dots color="primary" size="40px" />
+          </div>
+        </template>
+      </q-infinite-scroll>
     </div>
-     <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn :to="{name: 'note.create'}" fab icon="add" color="primary" />
+    <q-page-sticky position="bottom-right" :offset="[18, 18]">
+      <q-btn :to="{ name: 'note.create' }" fab icon="add" color="primary" />
     </q-page-sticky>
   </q-page>
 </template>
@@ -52,46 +48,36 @@ import useAuthUser from "src/composables/useAuthUser";
 import { ref, onMounted } from "vue";
 
 const { user } = useAuthUser();
-const maxSize = 1000;
-const heavyList = [];
 const dateNow = ref('');
 getCurrentDay()
-const filterDate = ref({ from: "08-07-2023", to: dateNow.value });
+const filterDate = ref({ from: "2023-08-7", to: dateNow.value });
 
-for (let i = 0; i < maxSize; i++) {
-  heavyList.push({
-    label: "Option " + (i + 1),
-  });
+const items = ref([{}, {}, {}, {}, {}, {}, {}])
+
+function onLoad(index, done) {
+  setTimeout(() => {
+    items.value.push({}, {}, {}, {}, {}, {}, {})
+    done()
+  }, 2000)
 }
-
-const virtualListRef = ref(null);
-const virtualListIndex = ref(50);
 
 onMounted(() => {
-  virtualListRef.value.scrollTo(virtualListIndex.value);
+
 });
 
-function getCurrentDay(){
-    const currentDate = new Date();
+function getCurrentDay() {
+  const currentDate = new Date();
 
-    // Lấy ngày, tháng và năm từ đối tượng Date
-    const day = String(currentDate.getDate()).padStart(2, '0'); // Lấy ngày và định dạng thành "DD"
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Lấy tháng (lưu ý: tháng bắt đầu từ 0) và định dạng thành "MM"
-    const year = currentDate.getFullYear(); // Lấy năm và không cần định dạng
+  // Lấy ngày, tháng và năm từ đối tượng Date
+  const day = String(currentDate.getDate()).padStart(2, '0'); // Lấy ngày và định dạng thành "DD"
+  const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Lấy tháng (lưu ý: tháng bắt đầu từ 0) và định dạng thành "MM"
+  const year = currentDate.getFullYear(); // Lấy năm và không cần định dạng
 
-    // Tạo chuỗi "DD-MM-YYYY" từ các giá trị trên
-    const formattedDate = `${day}-${month}-${year}`;
-    dateNow.value = formattedDate
+  // Tạo chuỗi "DD-MM-YYYY" từ các giá trị trên
+  const formattedDate = `${year}-${month}-${day}`;
+  dateNow.value = formattedDate
 }
 
-const onVirtualScroll = ({ index }) => {
-  virtualListIndex.value = index;
-  console.log("test");
-};
-
-const executeScroll = () => {
-  virtualListRef.value.scrollTo(virtualListIndex.value, "start-force");
-};
 </script>
 
 <style>

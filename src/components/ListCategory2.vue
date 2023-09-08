@@ -1,43 +1,19 @@
 <template>
-  <q-card style="height: 45vh; overflow-y: hidden">
+  <q-card style="height: 45vh; overflow-y: hidden;">
     <q-linear-progress :value="1" color="secondary" />
     <q-card-section>
-      <q-tabs
-        v-model="tab"
-        dense
-        class="text-grey"
-        active-color="primary"
-        indicator-color="primary"
-        align="justify"
-        narrow-indicator
-      >
+      <q-tabs v-model="tab" dense class="text-grey" active-color="primary" indicator-color="primary" align="justify"
+        narrow-indicator>
         <q-tab name="mails" label="Khoảng thu" no-caps />
         <q-tab name="alarms" label="Khoản chi" no-caps />
       </q-tabs>
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="mails">
-          <q-virtual-scroll
-            style="max-height: 100vh;"
-            ref="virtualListThu"
-            component="q-list"
-            :items="listCategory"
-            separator
-            @virtual-scroll="onVirtualScroll"
-            v-slot="{ item, index }"
-          >
-            <q-item
-              v-if="item.type === true"
-              clickable
-              v-ripple
-              @click="getCategory(item)"
-              :key="index"
-            >
+          <q-virtual-scroll style="max-height: 40vh;" ref="virtualListThu" component="q-list" :items="listCategory"
+            separator @virtual-scroll="onVirtualScroll" v-slot="{ item, index }">
+            <q-item v-if="item.type === true" clickable v-ripple @click="getCategory(item)" :key="index">
               <q-item-section avatar>
-                <q-avatar
-                  color="positive"
-                  text-color="white"
-                  icon="monetization_on"
-                />
+                <q-avatar color="positive" text-color="white" icon="monetization_on" />
               </q-item-section>
 
               <q-item-section>{{ item.name }}</q-item-section>
@@ -45,28 +21,11 @@
           </q-virtual-scroll>
         </q-tab-panel>
         <q-tab-panel name="alarms">
-          <q-virtual-scroll
-            style="max-height: 100vh;"
-            ref="virtualListChi"
-            component="q-list"
-            :items="listCategory"
-            separator
-            @virtual-scroll="onVirtualScroll"
-            v-slot="{ item, index }"
-          >
-            <q-item
-              v-if="item.type === false"
-              clickable
-              v-ripple
-              @click="getCategory(item)"
-              :key="index"
-            >
+          <q-virtual-scroll style="max-height: 40vh;" ref="virtualListChi" component="q-list" :items="listCategory"
+            separator @virtual-scroll="onVirtualScroll" v-slot="{ item, index }">
+            <q-item v-if="item.type === false" clickable v-ripple @click="getCategory(item)" :key="index">
               <q-item-section avatar>
-                <q-avatar
-                  color="warning"
-                  text-color="white"
-                  icon="credit_card_off"
-                />
+                <q-avatar color="warning" text-color="white" icon="credit_card_off" />
               </q-item-section>
 
               <q-item-section> {{ item.name }}</q-item-section>
@@ -112,7 +71,7 @@ const onVirtualScroll = ({ index }) => {
 
 </script>
 <style scoped>
-.q-tab-panel{
+.q-tab-panel {
   padding: 0 !important;
 }
 </style>

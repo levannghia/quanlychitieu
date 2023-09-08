@@ -21,7 +21,7 @@
         </div>
       </div> -->
       <div class="btn-container">
-        <div class="oper-container">
+        <!-- <div class="oper-container">
           <div class="btn" id="clear" @click="clear()">
             <div class="number">AC</div>
           </div>
@@ -37,8 +37,24 @@
           <div class="btn operations less" @click="append('-')">
             <div class="number">-</div>
           </div>
+        </div> -->
+        <div class="row">
+          <div class="btn" @click="clear()">
+            <div class="number">AC</div>
+          </div>
+          <div class="btn" @click="append('/')">
+            <div class="number">÷</div>
+          </div>
+          <div class="btn" @click="append('*')">
+            <div class="number">×</div>
+          </div>
+          <div class="btn" @click="append('+')">
+            <div class="number">+</div>
+          </div>
+          <div class="btn" @click="append('-')">
+            <div class="number">-</div>
+          </div>
         </div>
-
         <div class="row">
           <div class="btn" @click="append('7')">
             <div class="number">7</div>
@@ -174,7 +190,7 @@ watchEffect(() => {
 /* body {
   height: 100vh;
   width: 100vw;
-  background: #1939f6;
+  background: var(--q-primary);
   overflow: hidden;
 } */
 
@@ -202,7 +218,7 @@ watchEffect(() => {
   box-shadow: 10px 10px 50px rgba(0, 0, 0, 0.5);
   margin: auto;
   height: 300px;
-  width: 300px;
+  width: 100%;
   background: #191b1d;
 }
 #app_cal #calculator .screen-container {
@@ -223,7 +239,7 @@ watchEffect(() => {
 #app_cal #calculator .screen-container .result {
   display: flex;
   align-items: flex-end;
-  color: #1939f6;
+  color: var(--q-primary);
   justify-content: flex-end;
 }
 #app_cal #calculator .screen-container .result .number {
@@ -256,8 +272,8 @@ watchEffect(() => {
   position: static;
   width: 50px;
   height: 50px;
-  background: #1939f6;
-  color: #1939f6;
+  background: var(--q-primary);
+  color: var(--q-primary);
   background: #ffffff;
   display: flex;
   cursor: pointer;
@@ -379,7 +395,7 @@ watchEffect(() => {
     background: #1e2022;
   }
   to {
-    background: #1939f6;
+    background: var(--q-primary);
   }
 }
 
@@ -388,7 +404,7 @@ watchEffect(() => {
     background: #1e2022;
   }
   to {
-    background: #1939f6;
+    background: var(--q-primary);
   }
 }
 @-webkit-keyframes fadeThird {
@@ -550,15 +566,15 @@ watchEffect(() => {
 
 @media screen and (max-width: 500px) {
   #app_cal {
-    transform: scale(0.8) translateY(40%);
+    transform: scale(0.9) translateY(15%);
   }
 }
 *::-moz-selection {
-  background: #1939f6;
+  background: var(--q-primary);
   color: #ffffff;
 }
 *::selection {
-  background: #1939f6;
+  background: var(--q-primary);
   color: #ffffff;
 }
 
