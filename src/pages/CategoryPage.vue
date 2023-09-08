@@ -82,7 +82,7 @@ const loading = ref(true);
 const categoryStore = useCategoryStore();
 const listCategory = ref([]);
 const $q = useQuasar();
-const table = "Categories";
+const table = "categories";
 
 onBeforeMount(() => {
   if (categoryStore.type) {

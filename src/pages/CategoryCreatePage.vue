@@ -67,7 +67,7 @@ let options = [
 const handleCreateCategory = async () => {
   try {
     const { data, error } = await supabase
-      .from('Categories')
+      .from('categories')
       .insert({userId: user.value.id , name: name.value, type: typeCategory.value.value })
       .select();
       if (error) throw error

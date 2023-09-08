@@ -9,7 +9,7 @@
       </q-tabs>
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="mails">
-          <q-virtual-scroll style="max-height: 40vh;" ref="virtualListThu" component="q-list" :items="listCategory"
+          <q-virtual-scroll style="max-height: 38vh;" ref="virtualListThu" component="q-list" :items="listCategory"
             separator @virtual-scroll="onVirtualScroll" v-slot="{ item, index }">
             <q-item v-if="item.type === true" clickable v-ripple @click="getCategory(item)" :key="index">
               <q-item-section avatar>
@@ -21,7 +21,7 @@
           </q-virtual-scroll>
         </q-tab-panel>
         <q-tab-panel name="alarms">
-          <q-virtual-scroll style="max-height: 40vh;" ref="virtualListChi" component="q-list" :items="listCategory"
+          <q-virtual-scroll style="max-height: 38vh;" ref="virtualListChi" component="q-list" :items="listCategory"
             separator @virtual-scroll="onVirtualScroll" v-slot="{ item, index }">
             <q-item v-if="item.type === false" clickable v-ripple @click="getCategory(item)" :key="index">
               <q-item-section avatar>

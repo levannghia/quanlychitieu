@@ -77,7 +77,7 @@ const openDialog = ref(true);
 const selectedCategory = ref({});
 const router = useRouter();
 const listCategory = ref([]);
-const table = "Categories";
+const table = "categories";
 const toggleCalculator = ref(true);
 const dateNow = ref('');
 getCurrentDay()
@@ -115,7 +115,7 @@ const handleCreateNote = async () => {
       return
     } else {
       const { data, error } = await supabase
-        .from('Notes')
+        .from('notes')
         .insert(form.value)
         .select();
       if (error) throw error

@@ -99,7 +99,7 @@ const tab = ref("mails");
 //   openDialog.value = !openDialog.value
 // }
 const listCategory = ref([]);
-const table = "Categories";
+const table = "categories";
 
 const virtualListThu = ref(null);
 const virtualListChi = ref(null);
