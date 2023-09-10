@@ -1,18 +1,31 @@
 <template>
   <q-page>
     <div class="bg-primary" id="custom-money">
-      <div class="text-white box-shadow q-pa-md row justify-between items-center">
+      <div
+        class="text-white box-shadow q-pa-md row justify-between items-center"
+      >
         <div class="text-left">
           <span class="text-subtitle2">Số dư</span>
-          <div class="text-h5 q-mt-sm">10.000</div>
+          <div class="text-h5 q-mt-sm">{{totalsPrice}}</div>
         </div>
         <div class="text-right">
           <q-btn icon="event" round color="primary">
-            <q-popup-proxy @before-show="filterDate" cover transition-show="scale" transition-hide="scale">
+            <q-popup-proxy
+              @before-show="filterDate"
+              cover
+              transition-show="scale"
+              transition-hide="scale"
+            >
               <q-date v-model="filterDate" range mask="YYYY-MM-DD">
                 <div class="row items-center justify-end q-gutter-sm">
                   <q-btn label="Cancel" color="primary" flat v-close-popup />
-                  <q-btn label="OK" color="primary" flat @click="save" v-close-popup />
+                  <q-btn
+                    label="OK"
+                    color="primary"
+                    flat
+                    @click="save"
+                    v-close-popup
+                  />
                 </div>
               </q-date>
             </q-popup-proxy>
@@ -27,7 +40,7 @@
       </div>
     </div>
     <div class="q-pa-md">
-      <q-infinite-scroll @load="onLoad" :offset="250">
+      <q-infinite-scroll @load="onLoad" :offset="0">
         <div v-for="(item, index) in listUniqueDate" :key="index">
           <q-card class="q-mb-md" flat bordered>
             <q-item>
@@ -39,18 +52,26 @@
 
               <q-item-section>
                 <q-item-label>{{ item.date }}</q-item-label>
-                <q-item-label class="text-subtitle2"><span class="text-secondary">200000</span></q-item-label>
               </q-item-section>
               <q-item-section>
-                <q-item-label class="text-center"><span class="text-positive">+ 150000</span></q-item-label>
+                <q-item-label class="text-center"
+                  ><span class="text-positive"
+                    >+ {{ item.totals.true ? item.totals.true : 0 }}</span
+                  ></q-item-label
+                >
                 <q-item-label caption class="text-center">
                   Thu nhập
                 </q-item-label>
               </q-item-section>
               <q-item-section>
-                <q-item-label class="text-center"><span class="text-negative">- 150000</span></q-item-label>
+                <q-item-label class="text-center"
+                  ><span class="text-negative"
+                    >- {{ item.totals.false ? item.totals.false : 0 }}</span
+                  ></q-item-label
+                >
                 <q-item-label caption class="text-center">
-                  Chi tiêu</q-item-label>
+                  Chi tiêu</q-item-label
+                >
               </q-item-section>
             </q-item>
 
@@ -60,13 +81,33 @@
               <q-card-section class="col-12">
                 <q-list>
                   <div v-for="note in item.notes" :key="note.id">
-                    <q-item>
+                    <q-item dense clickable @click="console.log('ok')">
                       <q-item-section avatar>
-                        <q-avatar color="positive" text-color="white" icon="monetization_on" />
+                        <q-avatar
+                          :color="note.categories.type ? 'positive' : 'warning'"
+                          text-color="white"
+                          :icon="
+                            note.categories.type
+                              ? 'monetization_on'
+                              : 'credit_card_off'
+                          "
+                        />
                       </q-item-section>
-                      <q-item-section>List item</q-item-section>
+                      <q-item-section>{{
+                        note.categories.name
+                      }}</q-item-section>
                       <q-item-section side>
-                        <q-item-label caption><span class="text-black">- 150000</span></q-item-label>
+                        <q-item-label caption
+                          ><span
+                            :class="
+                              note.categories.type
+                                ? 'text-primary'
+                                : 'text-black'
+                            "
+                            >{{ note.categories.type ? "+" : "-" }}
+                            {{ note.price }}</span
+                          ></q-item-label
+                        >
                       </q-item-section>
                     </q-item>
                     <q-separator spaced inset />
@@ -91,30 +132,35 @@
 
 <script setup>
 import useAuthUser from "src/composables/useAuthUser";
-import { ref, onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import useSupabase from "src/boot/supabase";
 import useNotify from "src/composables/useNotify";
 
 const { user } = useAuthUser();
-const { notifyError, notifySuccess } = useNotify()
+const { notifyError, notifySuccess } = useNotify();
 const { supabase } = useSupabase();
 const dateNow = ref("");
-const listUniqueDate = ref([])
+const totalsPrice = ref(0);
 const numberPage = ref(-1);
 const sizePage = ref(7);
+const listUniqueDate = ref([]);
 getCurrentDay();
-const filterDate = ref({ from: "2023-08-07", to: dateNow.value });
+const filterDate = ref({
+  from: '',
+  to: ''
+});
+fecthAllDate();
 
 const handleGetNoteByDate = async (page, pageSize) => {
   try {
     const { data, error } = await supabase
       .from("distinct_date_3")
-      .select('date')
-      .eq('userId', user.value.id)
+      .select("date")
+      .eq("userId", user.value.id)
       .range(page * pageSize, (page + 1) * pageSize - 1)
-      .order('date', { ascending: false });
+      .order("date", { ascending: false });
     if (error) throw error;
-    return data
+    return data;
   } catch (error) {
     notifyError(error.message);
   }
@@ -123,56 +169,67 @@ const handleGetNoteByDate = async (page, pageSize) => {
 const getNoteForDate = async (date) => {
   try {
     const { data, error } = await supabase
-      .from('notes')
-      .select(`
-    price,
+      .from("notes")
+      .select(
+        `
+      id,
+      price,
     categories (
       name,
       type
     )
-  `)
+  `
+      )
       .match({ userId: user.value.id, date: date })
-      .order('created_at', { ascending: false }); // Thay thế bằng tên cột bạn muốn sắp xếp
+      .order("created_at", { ascending: false }); // Thay thế bằng tên cột bạn muốn sắp xếp
 
-    if (error) throw error
+    if (error) throw error;
     return data;
   } catch (error) {
-    notifyError(error.message)
+    notifyError(error.message);
   }
-}
+};
 
 const getListDate = async (page, size) => {
-  let res = await handleGetNoteByDate(page, size)
+  let res = await handleGetNoteByDate(page, size);
 
   if (res.length > 0) {
     for (const row of res) {
       const date = row;
 
-      let listNotes = await getNoteForDate(date.date)
+      let listNotes = await getNoteForDate(date.date);
+      const totals = listNotes.reduce(
+        (acc, item) => {
+          const type = item.categories.type;
+          acc[type] = acc[type] || 0;
+          acc[type] += item.price;
+          return acc;
+        },
+        {
+          income: 0,
+          expense: 0,
+        }
+      );
 
       const mergedObject = {
         date: date.date,
-        notes: listNotes
-      }
-      listUniqueDate.value.push(mergedObject)
+        notes: listNotes,
+        totals: totals,
+      };
+      listUniqueDate.value.push(mergedObject);
     }
   }
 
-  console.log(listUniqueDate.value);
-
-}
+  // console.log(listUniqueDate.value);
+};
 
 function onLoad(index, done) {
   setTimeout(() => {
-    numberPage.value++
-    getListDate(numberPage.value, sizePage.value)
+    numberPage.value++;
+    getListDate(numberPage.value, sizePage.value);
     done();
   }, 1000);
-
 }
-onMounted(() => {
-
-});
 
 function getCurrentDay() {
   const currentDate = new Date();
@@ -186,6 +243,74 @@ function getCurrentDay() {
   const formattedDate = `${year}-${month}-${day}`;
   dateNow.value = formattedDate;
 }
+
+async function fecthAllDate() {
+  try {
+    const { data, error } = await supabase
+      .from("distinct_date_3")
+      .select("date")
+      .eq("userId", user.value.id)
+      .order("date", { ascending: false });
+    if (error) throw error;
+    if (data.length > 0) {
+      filterDate.value = {
+        from: data[data.length - 1].date,
+        to: dateNow.value,
+      };
+    } else {
+      filterDate.value = {
+        from: dateNow.value,
+        to: dateNow.value,
+      };
+    }
+  } catch (error) {
+    notifyError(error.message);
+  }
+}
+
+const getTotalsPrice = async () => {
+  try {
+    const { data, error } = await supabase
+      .from("notes")
+      .select(
+        `
+      price,
+      date,
+    categories (
+      type
+    )
+  `
+      )
+      .eq("userId", user.value.id)
+      .gte("date", filterDate.value.from)
+      .lte("date", filterDate.value.to);
+    if (error) throw error;
+    let tong = 0
+    let hieu = 0
+    for (let i = 0; i < data.length; i++) {
+      if(data[i].categories.type === true){
+        tong += data[i].price;
+      }else{
+        hieu += data[i].price;
+      }
+    }
+    totalsPrice.value = tong - hieu
+    console.log(data);
+    return data;
+  } catch (error) {
+    notifyError(error.message);
+  }
+};
+
+onMounted(() => {
+  setTimeout(() => {
+    getTotalsPrice();
+  }, 1000);
+});
+
+const save = () => {
+  getTotalsPrice();
+};
 </script>
 
 <style>
