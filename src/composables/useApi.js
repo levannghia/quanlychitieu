@@ -48,14 +48,27 @@ export default function useApi() {
     return data;
   }
 
-  const getById = async (table, id) => {
+  const getById = async (table, id, userId) => {
     const { data, error } = await supabase
       .from(table)
-      .select()
-      .eq('id', id);
+      .select(  `
+      id,
+      userId,
+      price,
+      date,
+      description,
+    categories (
+      id,
+      name,
+      type
+    )
+  `)
+      .match({ id: id, userId: userId })
+      .limit(1)
+      .single();
     if (error) throw error
 
-    return data[0]
+    return data
   }
 
   const updateById = async (table, form) => {

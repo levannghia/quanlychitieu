@@ -66,7 +66,6 @@ function getCategory(item) {
 
 const onVirtualScroll = ({ index }) => {
   virtualListIndex.value = index;
-  console.log("test");
 };
 
 </script>

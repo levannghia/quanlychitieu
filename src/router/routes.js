@@ -19,6 +19,7 @@ const routes = [
     children: [
       { path: '', name: 'home', component: () => import('pages/IndexPage.vue') },
       { path: '/note-create', name: 'note.create', component: () => import('src/pages/NoteCreatePage.vue') },
+      { path: '/note-edit/:id', name: 'note.edit', component: () => import('src/pages/NoteEditPage.vue') },
     ],
     meta: {
       requiresAuth: true
@@ -29,7 +30,8 @@ const routes = [
     component: () => import('layouts/CategoryLayout.vue'),
     children: [
       { path: '', name: 'category.index', component: () => import('src/pages/CategoryPage.vue') },
-      { path: 'create', name: 'category.create', component: () => import('src/pages/CategoryCreatePage.vue') }
+      { path: 'create', name: 'category.create', component: () => import('src/pages/CategoryCreatePage.vue') },
+      { path: 'chart', name: 'category.chart', component: () => import('src/pages/ChartPage.vue') }
     ],
     meta: {
       requiresAuth: true

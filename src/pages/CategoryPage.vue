@@ -74,7 +74,7 @@ import { useQuasar } from 'quasar'
 import useSupabase from 'src/boot/supabase'
 
 const { supabase } = useSupabase()
-const { fetchPaginatedData, getById, removeById } = useApi();
+const { fetchListData, removeById } = useApi();
 const { notifyError, notifySuccess } = useNotify();
 const { user } = useAuthUser();
 const tab = ref("");
@@ -148,7 +148,7 @@ const handleGetCategory = async (category) => {
 const handleListCategory = async () => {
   try {
     loading.value = true;
-    listCategory.value = await fetchPaginatedData(table, user.value.id, 0, 5);
+    listCategory.value = await fetchListData(table, user.value.id);
   } catch (error) {
     notifyError(error.message);
   } finally {

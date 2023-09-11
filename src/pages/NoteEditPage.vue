@@ -3,13 +3,13 @@
     <div class="bg-primary" id="custom-money-note">
       <div class="text-white box-shadow q-pa-md row justify-between items-center">
         <div class="text-left">
-          <q-btn :icon="selectedCategory.type ? 'monetization_on' : 'credit_card_off'
-            " round :color="selectedCategory.type ? 'positive' : 'warning'" @click="handleDialog"></q-btn>
-          <div class="text-subtitle1 q-mt-sm">{{ selectedCategory.name }}</div>
+          <q-btn :icon="form.category.type ? 'monetization_on' : 'credit_card_off'
+            " round :color="form.category.type ? 'positive' : 'warning'" @click="handleDialog"></q-btn>
+          <div class="text-subtitle1 q-mt-sm">{{ form.category.name }}</div>
         </div>
         <div class="text-right">
           <div class="text-h6" @click="toggleCalculator = !toggleCalculator">
-            {{ calculatorStore.tempResult }} <q-icon name="expand_more" />
+            {{ calculatorStore.tempResult === "" ? form.price : calculatorStore.tempResult }} <q-icon name="expand_more" />
           </div>
           <div class="text-subtitle1 q-mt-sm">{{ repCalculation }} =</div>
         </div>
@@ -42,7 +42,7 @@
       </q-card-section>
     </q-card>
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn @click="handleCreateNote" fab :icon="btnIcon" color="primary" />
+      <q-btn @click="handleUpdateNote" fab :icon="btnIcon" color="primary" />
     </q-page-sticky>
     <q-dialog v-model="openDialog" @click="handleDialog" position="bottom">
       <list-category-2 :listCategory="listCategory" @getCategory="handleGetCategory"></list-category-2>
@@ -53,12 +53,11 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch, computed, onBeforeUnmount } from "vue";
-// import { useCategoryStore } from "src/stores/category-store";
+import { ref, computed } from "vue";
 import useAuthUser from "src/composables/useAuthUser";
 import useSupabase from "src/boot/supabase";
 import useNotify from "src/composables/useNotify";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import useApi from "src/composables/useApi";
 import ListCategory2 from "src/components/ListCategory2.vue";
 import Calculator from "src/components/Calculator.vue";
@@ -66,57 +65,71 @@ import { useCalculatorStore } from "src/stores/calculator-store";
 import { useQuasar } from 'quasar'
 
 const calculatorStore = useCalculatorStore();
-const { fetchListData } = useApi();
+const { fetchListData, getById } = useApi();
 const { notifyError, notifySuccess } = useNotify()
 const { supabase } = useSupabase()
 const $q = useQuasar();
 const { user } = useAuthUser();
-// const categoryStore = useCategoryStore();
 const btnIcon = ref('done')
-const openDialog = ref(true);
-const selectedCategory = ref({});
+const openDialog = ref(false);
 const router = useRouter();
+const route = useRoute();
 const listCategory = ref([]);
 const table = "categories";
 const toggleCalculator = ref(true);
-const dateNow = ref('');
-getCurrentDay()
 const form = ref({
-  date: dateNow.value,
+  id: null,
+  userId: "",
+  date: null,
   description: "",
   price: null,
-  categoryId: null,
-  userId: user.value.id
+  category: {
+    id: null,
+    name: "",
+    type: false
+  },
 })
 
 const handleDialog = () => {
   openDialog.value = !openDialog.value;
 };
 
-function getCurrentDay() {
-  const currentDate = new Date();
-
-  // Lấy ngày, tháng và năm từ đối tượng Date
-  const day = String(currentDate.getDate()).padStart(2, '0'); // Lấy ngày và định dạng thành "DD"
-  const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Lấy tháng (lưu ý: tháng bắt đầu từ 0) và định dạng thành "MM"
-  const year = currentDate.getFullYear(); // Lấy năm và không cần định dạng
-
-  // Tạo chuỗi "YYYY-MM-DD" từ các giá trị trên
-  const formattedDate = `${year}-${month}-${day}`;
-  dateNow.value = formattedDate
+const handleGetNoteById = async () => {
+  try {
+    let res = await getById('notes', route.params.id, user.value.id);
+    form.value.id = res.id;
+    form.value.date = res.date;
+    form.value.userId = res.userId;
+    form.value.description = res.description;
+    form.value.category.id = res.categories.id;
+    form.value.category.name = res.categories.name;
+    form.value.category.type = res.categories.type;
+    form.value.price = res.price;
+  } catch (error) {
+    notifyError(error.message)
+  }
 }
 
-const handleCreateNote = async () => {
-  form.value.categoryId = selectedCategory.value.id
-  form.value.price = calculatorStore.tempResult
+const handleUpdateNote = async () => {
+
+  if(Object.keys(calculatorStore.tempResult).length > 0){
+    form.value.price = calculatorStore.tempResult
+  }
+
   try {
-    if (form.value.price == "") {
+    if (form.value.price == null) {
       notifyError("Vui lòng nhập số tiền");
       return
     } else {
       const { data, error } = await supabase
         .from('notes')
-        .insert(form.value)
+        .update({
+          price: form.value.price,
+          description: form.value.description,
+          date: form.value.date,
+          categoryId: form.value.category.id
+        })
+        .match({ id: form.value.id })
         .select();
       if (error) throw error
       $q.loading.show()
@@ -137,17 +150,19 @@ const handleCreateNote = async () => {
   }
 }
 
-watch(
-  () => openDialog.value,
-  () => {
-    if (Object.keys(selectedCategory.value).length === 0) {
-      selectedCategory.value = listCategory.value[0];
-    }
-  }
-);
+// watch(
+//   () => openDialog.value,
+//   () => {
+//     if (Object.keys(selectedCategory.value).length === 0) {
+//       selectedCategory.value = listCategory.value[0];
+//     }
+//   }
+// );
 
 const handleGetCategory = (item) => {
-  selectedCategory.value = item;
+  form.value.category.id = item.id
+  form.value.category.name = item.name
+  form.value.category.type = item.type
   openDialog.value = false;
 };
 
@@ -169,13 +184,10 @@ const handleListCategory = async () => {
   }
 };
 
+handleGetNoteById();
 handleListCategory();
-onMounted(() => { });
+// onMounted(() => {});
 
-onBeforeUnmount(() => {
-  calculatorStore.calculation = ""
-  calculatorStore.tempResult = ""
-})
 </script>
 
 <style scoped>
