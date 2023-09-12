@@ -51,7 +51,7 @@ export default function useApi() {
   const getById = async (table, id, userId) => {
     const { data, error } = await supabase
       .from(table)
-      .select(  `
+      .select(`
       id,
       userId,
       price,
@@ -80,7 +80,30 @@ export default function useApi() {
     return data
   }
 
+  function generateRandomColorArray(length) {
+    const colorArray = [];
+
+    // Hàm này tạo một mã màu ngẫu nhiên
+    function getRandomColor() {
+      const letters = "0123456789ABCDEF";
+      let color = "#";
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    // Tạo mảng các mã màu ngẫu nhiên
+    for (let i = 0; i < length; i++) {
+      const randomColor = getRandomColor();
+      colorArray.push(randomColor);
+    }
+
+    return colorArray;
+  }
+
   return {
+    generateRandomColorArray,
     fetchPaginatedData,
     getById,
     removeById,
