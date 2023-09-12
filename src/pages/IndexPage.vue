@@ -1,18 +1,31 @@
 <template>
   <q-page>
     <div class="bg-primary" id="custom-money">
-      <div class="text-white box-shadow q-pa-md row justify-between items-center">
+      <div
+        class="text-white box-shadow q-pa-md row justify-between items-center"
+      >
         <div class="text-left">
           <span class="text-subtitle2">Số dư</span>
           <div class="text-h5 q-mt-sm">{{ totalsPrice }}</div>
         </div>
         <div class="text-right">
           <q-btn icon="event" round color="primary">
-            <q-popup-proxy @before-show="filterDate" cover transition-show="scale" transition-hide="scale">
+            <q-popup-proxy
+              @before-show="filterDate"
+              cover
+              transition-show="scale"
+              transition-hide="scale"
+            >
               <q-date v-model="filterDate" range mask="YYYY-MM-DD">
                 <div class="row items-center justify-end q-gutter-sm">
                   <q-btn label="Cancel" color="primary" flat v-close-popup />
-                  <q-btn label="OK" color="primary" flat @click="save" v-close-popup />
+                  <q-btn
+                    label="OK"
+                    color="primary"
+                    flat
+                    @click="save"
+                    v-close-popup
+                  />
                 </div>
               </q-date>
             </q-popup-proxy>
@@ -27,9 +40,20 @@
       </div>
     </div>
     <div class="q-pa-md">
-      <q-virtual-scroll style="max-height: 72vh;" ref="virtualListDate" component="q-list" :items="listUniqueDate"
-        separator @virtual-scroll="onVirtualScroll" v-slot="{ item, index }">
-        <transition-group appear enter-active-class="animated fadeIn slow" leave-active-class="animated fadeOut slow">
+      <q-virtual-scroll
+        style="max-height: 72vh"
+        ref="virtualListDate"
+        component="q-list"
+        :items="listUniqueDate"
+        separator
+        @virtual-scroll="onVirtualScroll"
+        v-slot="{ item, index }"
+      >
+        <transition-group
+          appear
+          enter-active-class="animated fadeIn slow"
+          leave-active-class="animated fadeOut slow"
+        >
           <q-card class="q-mb-md" flat bordered :key="index">
             <q-item>
               <q-item-section avatar>
@@ -42,17 +66,24 @@
                 <q-item-label>{{ item.date }}</q-item-label>
               </q-item-section>
               <q-item-section>
-                <q-item-label class="text-center"><span class="text-positive">+ {{ item.totals.true ? item.totals.true : 0
-                }}</span></q-item-label>
+                <q-item-label class="text-center"
+                  ><span class="text-positive"
+                    >+ {{ item.totals.true ? item.totals.true : 0 }}</span
+                  ></q-item-label
+                >
                 <q-item-label caption class="text-center">
                   Thu nhập
                 </q-item-label>
               </q-item-section>
               <q-item-section>
-                <q-item-label class="text-center"><span class="text-negative">- {{ item.totals.false ? item.totals.false :
-                  0 }}</span></q-item-label>
+                <q-item-label class="text-center"
+                  ><span class="text-negative"
+                    >- {{ item.totals.false ? item.totals.false : 0 }}</span
+                  ></q-item-label
+                >
                 <q-item-label caption class="text-center">
-                  Chi tiêu</q-item-label>
+                  Chi tiêu</q-item-label
+                >
               </q-item-section>
             </q-item>
 
@@ -64,20 +95,31 @@
                   <div v-for="note in item.notes" :key="note.id">
                     <q-item dense clickable @click="getLinkNote(note.id)">
                       <q-item-section avatar>
-                        <q-avatar :color="note.categories.type ? 'positive' : 'warning'" text-color="white" :icon="note.categories.type
-                            ? 'monetization_on'
-                            : 'credit_card_off'
-                          " />
+                        <q-avatar
+                          :color="note.categories.type ? 'positive' : 'warning'"
+                          text-color="white"
+                          :icon="
+                            note.categories.type
+                              ? 'monetization_on'
+                              : 'credit_card_off'
+                          "
+                        />
                       </q-item-section>
                       <q-item-section>{{
                         note.categories.name
                       }}</q-item-section>
                       <q-item-section side>
-                        <q-item-label caption><span :class="note.categories.type
-                              ? 'text-primary'
-                              : 'text-black'
-                            ">{{ note.categories.type ? "+" : "-" }}
-                            {{ note.price }}</span></q-item-label>
+                        <q-item-label caption
+                          ><span
+                            :class="
+                              note.categories.type
+                                ? 'text-primary'
+                                : 'text-black'
+                            "
+                            >{{ note.categories.type ? "+" : "-" }}
+                            {{ note.price }}</span
+                          ></q-item-label
+                        >
                       </q-item-section>
                     </q-item>
                     <q-separator spaced inset />
@@ -114,8 +156,8 @@ const sizePage = ref(10);
 const listUniqueDate = ref([]);
 getCurrentDay();
 const filterDate = ref({
-  from: '',
-  to: ''
+  from: "",
+  to: "",
 });
 fecthAllDate();
 
@@ -142,6 +184,7 @@ const getNoteForDate = async (date) => {
         `
       id,
       price,
+      categoryId,
     categories (
       name,
       type
@@ -150,7 +193,6 @@ const getNoteForDate = async (date) => {
       )
       .match({ userId: user.value.id, date: date })
       .order("created_at", { ascending: false }); // Thay thế bằng tên cột bạn muốn sắp xếp
-
     if (error) throw error;
     return data;
   } catch (error) {
@@ -258,8 +300,8 @@ const getTotalsPrice = async () => {
       .gte("date", filterDate.value.from)
       .lte("date", filterDate.value.to);
     if (error) throw error;
-    let tong = 0
-    let hieu = 0
+    let tong = 0;
+    let hieu = 0;
     for (let i = 0; i < data.length; i++) {
       if (data[i].categories.type === true) {
         tong += data[i].price;
@@ -267,7 +309,7 @@ const getTotalsPrice = async () => {
         hieu += data[i].price;
       }
     }
-    totalsPrice.value = tong - hieu
+    totalsPrice.value = tong - hieu;
     return data;
   } catch (error) {
     notifyError(error.message);
@@ -285,7 +327,7 @@ const save = () => {
 };
 
 function getLinkNote(id) {
-  router.push({ name: 'note.edit', params: { id: id } })
+  router.push({ name: "note.edit", params: { id: id } });
 }
 </script>
 

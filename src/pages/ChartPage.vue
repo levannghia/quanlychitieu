@@ -17,13 +17,13 @@
 <script setup>
 import { onUnmounted, onMounted, ref, watch } from "vue";
 import { useCategoryStore } from "src/stores/category-store";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
-import { Doughnut } from 'vue-chartjs'
 import useApi from "src/composables/useApi";
 import useNotify from "src/composables/useNotify";
-import useAuthUser from "src/composables/useAuthUser";
+import useAuthUser from "src/composables/useAuthUser"
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import { Doughnut } from 'vue-chartjs'
+// import * as chartConfig from './chartConfig.js'
 import useSupabase from 'src/boot/supabase'
-import Chart from "src/components/Chart.vue";
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -93,7 +93,7 @@ const handleFilterCategory = async () => {
 
 onMounted(() => {
   categoryStore.bcrumb = 'Biểu đồ'
-  handleGetTotalByCategory();
+handleGetTotalByCategory();
 })
 
 onUnmounted(() => {
