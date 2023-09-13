@@ -112,10 +112,16 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch, watchEffect } from "vue";
+import { computed, onMounted, ref, watchEffect } from "vue";
 import { useCalculatorStore } from "src/stores/calculator-store";
 
+// const emit = defineEmits(['saveNotes'])
+
 const calculatorStore = useCalculatorStore();
+
+// function saveNotes() {
+//   emit('saveNotes')
+// }
 
 function append(value) {
   calculatorStore.calculation += value.toString();
@@ -187,13 +193,6 @@ watchEffect(() => {
 </script>
 
 <style scoped>
-/* body {
-  height: 100vh;
-  width: 100vw;
-  background: var(--q-primary);
-  overflow: hidden;
-} */
-
 * {
   box-sizing: border-box;
 }
@@ -566,7 +565,7 @@ watchEffect(() => {
 
 @media screen and (max-width: 500px) {
   #app_cal {
-    transform: scale(0.9) translateY(15%);
+    transform: scale(0.9) translateY(0%);
   }
 }
 *::-moz-selection {

@@ -16,10 +16,10 @@
         </div>
       </q-form>
     </div>
-    <div class="q-pt-md">
+    <!-- <div class="q-pt-md">
       <q-btn @click="loginSocial('google')" color="white" text-color="black" icon="img:/icons/icons8-google-48.png"
         label="Login With Google" rounded />
-    </div>
+    </div> -->
     <div class="q-px-md q-mt-md text-center">
       <div class="q-mb-md no-account">
         Don't have an account?<q-btn dense no-caps color="primary" flat to="/auth/register" size="15px">Register

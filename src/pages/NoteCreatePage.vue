@@ -41,8 +41,8 @@
         </div>
       </q-card-section>
     </q-card>
-    <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn @click="handleCreateNote" fab :icon="btnIcon" color="primary" />
+    <q-page-sticky position="bottom-right" :offset="[18, 18]" style="z-index: 99;">
+      <q-btn @click="handleCreateNote" fab :icon="btnIcon" color="secondary" />
     </q-page-sticky>
     <q-dialog v-model="openDialog" @click="handleDialog" position="bottom">
       <list-category-2 :listCategory="listCategory" @getCategory="handleGetCategory"></list-category-2>
