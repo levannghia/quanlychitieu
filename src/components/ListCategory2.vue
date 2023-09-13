@@ -4,8 +4,8 @@
     <q-card-section>
       <q-tabs v-model="tab" dense class="text-grey" active-color="primary" indicator-color="primary" align="justify"
         narrow-indicator>
-        <q-tab name="mails" label="Khoảng thu" no-caps />
-        <q-tab name="alarms" label="Khoản chi" no-caps />
+        <q-tab name="mails" label="Thu nhập" no-caps />
+        <q-tab name="alarms" label="Chi tiêu" no-caps />
       </q-tabs>
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="mails">
