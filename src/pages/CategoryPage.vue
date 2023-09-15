@@ -101,7 +101,6 @@ const handleRemoveCategory = async (category) => {
       persistent: true
     }).onOk(async () => {
       await removeById(table, category.id)
-      notifySuccess('Xóa thành công')
       handleListCategory()
     })
   } catch (error) {

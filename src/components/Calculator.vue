@@ -39,9 +39,6 @@
           </div>
         </div> -->
         <div class="row">
-          <div class="btn" @click="clear()">
-            <div class="number">AC</div>
-          </div>
           <div class="btn" @click="append('/')">
             <div class="number">÷</div>
           </div>
@@ -53,6 +50,9 @@
           </div>
           <div class="btn" @click="append('-')">
             <div class="number">-</div>
+          </div>
+          <div class="btn" @click="deleteStr()">
+            <div class="number"><q-icon name="backspace" /></div>
           </div>
         </div>
         <div class="row">
@@ -92,9 +92,12 @@
           <!-- 				<div class="btn" @click="append('-')">-</div> -->
         </div>
         <div class="row">
-          <div class="btn" id="dot" @click="append('.')">
-            <div class="number">.</div>
+          <div class="btn" id="dot" @click="clear()">
+            <div class="number">AC</div>
           </div>
+          <!-- <div class="btn" id="dot" @click="append('.')">
+            <div class="number">.</div>
+          </div> -->
           <div class="btn" @click="append('0')">
             <div class="number">0</div>
           </div>
@@ -104,7 +107,6 @@
           <div class="btn" id="result" @click="getResult()">
             <div class="number">=</div>
           </div>
-          <!-- 				<div class="btn" @click="append('+')">+</div> -->
         </div>
       </div>
     </div>
@@ -132,6 +134,13 @@ function getResult() {
     calculatorStore.calculation = calculatorStore.tempResult;
     //this.tempResult = ''
   }
+}
+
+function deleteStr() {
+
+  calculatorStore.deleteCal();
+
+// console.log(chuoi);
 }
 
 function clear() {

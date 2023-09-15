@@ -42,7 +42,10 @@
       </q-card-section>
     </q-card>
     <q-page-sticky position="bottom-right" :offset="[18, 18]" style="z-index: 99;">
-      <q-btn @click="handleUpdateNote" fab :icon="btnIcon" color="secondary" />
+      <q-btn @click="handleUpdateNote" fab :icon="btnIcon" color="secondary" :disable="loading"/>
+    </q-page-sticky>
+    <q-page-sticky position="bottom-left" :offset="[18, 18]" style="z-index: 99;">
+      <q-btn @click="handleRemoveNote(form.id)" fab icon="delete" color="negative" />
     </q-page-sticky>
     <q-dialog v-model="openDialog" @click="handleDialog" position="bottom">
       <list-category-2 :listCategory="listCategory" @getCategory="handleGetCategory"></list-category-2>
@@ -65,11 +68,12 @@ import { useCalculatorStore } from "src/stores/calculator-store";
 import { useQuasar } from 'quasar'
 
 const calculatorStore = useCalculatorStore();
-const { fetchListData, getById } = useApi();
+const { fetchListData, getById, removeById } = useApi();
 const { notifyError, notifySuccess } = useNotify()
 const { supabase } = useSupabase()
 const $q = useQuasar();
 const { user } = useAuthUser();
+const loading = ref(false)
 const btnIcon = ref('done')
 const openDialog = ref(false);
 const router = useRouter();
@@ -110,6 +114,23 @@ const handleGetNoteById = async () => {
   }
 }
 
+const handleRemoveNote = async (id) => {
+  try {
+    $q.dialog({
+      title: 'Xác nhận',
+      message: `Bạn muốn xóa ghi chú này ?`,
+      cancel: true,
+      persistent: true
+    }).onOk(async () => {
+      await removeById("notes",id)
+      router.push({name: 'home'})
+      // handleListCategory()
+    })
+  } catch (error) {
+    notifyError(error.message)
+  }
+}
+
 const handleUpdateNote = async () => {
 
   if(Object.keys(calculatorStore.tempResult).length > 0){
@@ -121,6 +142,7 @@ const handleUpdateNote = async () => {
       notifyError("Vui lòng nhập số tiền");
       return
     } else {
+      loading.value = true
       const { data, error } = await supabase
         .from('notes')
         .update({
@@ -137,6 +159,7 @@ const handleUpdateNote = async () => {
       if (data) {
         notifySuccess("Thêm thành công!")
         setTimeout(() => {
+          loading.value = false
           $q.loading.hide()
         }, 800)
 

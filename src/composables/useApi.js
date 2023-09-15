@@ -2,9 +2,11 @@ import useSupabase from 'src/boot/supabase'
 import useAuthUser from './useAuthUser'
 import { useRoute } from 'vue-router'
 import { ref } from 'vue'
+import useNotify from "src/composables/useNotify"
 import { useQuasar } from 'quasar'
 
 export default function useApi() {
+  const { notifyError, notifySuccess } = useNotify()
   const { supabase } = useSupabase()
   const { user } = useAuthUser()
   const route = useRoute()
@@ -39,13 +41,18 @@ export default function useApi() {
   }
 
   const removeById = async (table, id) => {
-    const { data, error } = await supabase
-      .from(table)
-      .delete()
-      .match({ id: id });
+    try {
+      const { data, error } = await supabase
+        .from(table)
+        .delete()
+        .match({ id: id });
 
-    if (error) throw error
-    return data;
+      if (error) throw error
+      notifySuccess('Xóa thành công')
+      return data;
+    } catch (error) {
+      notifyError("Xóa thất bại!")
+    }
   }
 
   const getById = async (table, id, userId) => {

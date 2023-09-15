@@ -42,7 +42,7 @@
       </q-card-section>
     </q-card>
     <q-page-sticky position="bottom-right" :offset="[18, 18]" style="z-index: 99;">
-      <q-btn @click="handleCreateNote" fab :icon="btnIcon" color="secondary" />
+      <q-btn @click="handleCreateNote" fab :icon="btnIcon" color="secondary" :disable="loading"/>
     </q-page-sticky>
     <q-dialog v-model="openDialog" @click="handleDialog" position="bottom">
       <list-category-2 :listCategory="listCategory" @getCategory="handleGetCategory"></list-category-2>
@@ -71,6 +71,7 @@ const { notifyError, notifySuccess } = useNotify()
 const { supabase } = useSupabase()
 const $q = useQuasar();
 const { user } = useAuthUser();
+const loading = ref(false);
 // const categoryStore = useCategoryStore();
 const btnIcon = ref('done')
 const openDialog = ref(true);
@@ -114,6 +115,7 @@ const handleCreateNote = async () => {
       notifyError("Vui lòng nhập số tiền");
       return
     } else {
+      loading.value = true
       const { data, error } = await supabase
         .from('notes')
         .insert(form.value)
@@ -124,6 +126,7 @@ const handleCreateNote = async () => {
       if (data) {
         notifySuccess("Thêm thành công!")
         setTimeout(() => {
+          loading.value = false
           $q.loading.hide()
         }, 800)
 

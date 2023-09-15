@@ -20,7 +20,7 @@
           </template>
         </q-select>
         <div>
-          <q-btn label="SAVE" type="submit" color="primary" class="full-width" />
+          <q-btn label="SAVE" type="submit" color="primary" :disable="loading" class="full-width" />
         </div>
       </q-form>
     </div>
@@ -36,6 +36,7 @@ import useNotify from "src/composables/useNotify"
 import { useRouter } from 'vue-router'
 
 const categoryStore = useCategoryStore()
+const loading = ref(false)
 const { user } = useAuthUser()
 const { supabase } = useSupabase()
 const { notifyError, notifySuccess } = useNotify()
@@ -66,6 +67,7 @@ let options = [
 
 const handleCreateCategory = async () => {
   try {
+    loading.value = true
     const { data, error } = await supabase
       .from('categories')
       .insert({userId: user.value.id , name: name.value, type: typeCategory.value.value })
@@ -74,6 +76,7 @@ const handleCreateCategory = async () => {
       notifySuccess("Thêm thành công!")
 
       setTimeout(() => {
+        loading.value = false
         router.push({name: 'category.index'})
       }, 1000)
   } catch (error) {
