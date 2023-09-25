@@ -31,7 +31,8 @@ const routes = [
     children: [
       { path: '', name: 'category.index', component: () => import('src/pages/CategoryPage.vue') },
       { path: 'create', name: 'category.create', component: () => import('src/pages/CategoryCreatePage.vue') },
-      { path: 'chart', name: 'category.chart', component: () => import('src/pages/ChartPage.vue') }
+      { path: 'chart', name: 'category.chart', component: () => import('src/pages/ChartPage.vue') },
+      { path: 'note', name: 'category.note', component: () => import('src/pages/NoteIndexPage.vue') },
     ],
     meta: {
       requiresAuth: true

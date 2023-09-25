@@ -6,7 +6,7 @@
           <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
         </q-avatar>
 
-        <q-toolbar-title> Quasar App </q-toolbar-title>
+        <q-toolbar-title> Juice App </q-toolbar-title>
 
         <div>
           <q-btn-dropdown class="q-pa-none" flat icon="settings">

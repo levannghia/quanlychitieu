@@ -7,7 +7,7 @@
           <div class="text-h5 q-mt-sm">{{ totalsPrice }}</div>
         </div>
         <div class="text-right">
-          <q-btn icon="event" round color="primary" v-if="filterDate.from.length > 0 && filterDate.to.length > 0">
+          <q-btn icon="event" round color="primary">
             <q-popup-proxy @before-show="filterDate" cover transition-show="scale" transition-hide="scale">
               <q-date v-model="filterDate" range mask="YYYY-MM-DD">
                 <div class="row items-center justify-end q-gutter-sm">
@@ -27,8 +27,7 @@
       </div>
     </div>
     <div class="q-pa-md">
-      <q-virtual-scroll style="max-height: 72vh" ref="virtualListDate" component="q-list" :items="listUniqueDate"
-        separator @virtual-scroll="onVirtualScroll" v-slot="{ item, index }">
+      <q-list bordered separator v-for="(item, index) in listUniqueDate" :key="index">
         <transition-group appear enter-active-class="animated fadeIn slow" leave-active-class="animated fadeOut slow">
           <q-card class="q-mb-md" flat bordered :key="index">
             <q-item>
@@ -87,17 +86,19 @@
             </q-card-section>
           </q-card>
         </transition-group>
-      </q-virtual-scroll>
+      </q-list>
+
     </div>
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn :to="{ name: 'note.create' }" fab icon="add" color="primary" />
     </q-page-sticky>
   </q-page>
+  <div ref="loadMoreIntersect"></div>
 </template>
 
 <script setup>
 import useAuthUser from "src/composables/useAuthUser";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import useSupabase from "src/boot/supabase";
 import useNotify from "src/composables/useNotify";
 import { useRouter } from "vue-router";
@@ -106,11 +107,12 @@ const router = useRouter();
 const { user } = useAuthUser();
 const { notifyError, notifySuccess } = useNotify();
 const { supabase } = useSupabase();
-const virtualListDate = ref(null);
+// const virtualListDate = ref(null);
+const loadMoreIntersect = ref(null)
 const dateNow = ref("");
 const totalsPrice = ref(0);
 const numberPage = ref(0);
-const sizePage = ref(10);
+const sizePage = ref(7);
 const listUniqueDate = ref([]);
 getCurrentDay();
 const filterDate = ref({
@@ -191,6 +193,8 @@ const getListDate = async (page, size) => {
   }
 };
 
+// const sortDate = computed(() => listUniqueDate.value.sort());
+// console.log(sortDate.value);
 // function onLoad(index, done) {
 //   setTimeout(() => {
 //     numberPage.value++;
@@ -201,10 +205,24 @@ const getListDate = async (page, size) => {
 
 getListDate(numberPage.value, sizePage.value);
 
-const onVirtualScroll = ({ index }) => {
+// const onVirtualScroll = ({ index }) => {
+//   numberPage.value++;
+//   setTimeout(() => {
+//     getListDate(numberPage.value, sizePage.value);
+//   }, 500);
+// };
+
+async function loadMore() {
   numberPage.value++;
-  getListDate(numberPage.value, sizePage.value);
-};
+  let timeout = null;
+  if(timeout){
+    clearTimeout(timeout);
+  }
+
+  timeout = setTimeout(async () => {
+    await getListDate(numberPage.value, sizePage.value);
+  },1500)
+}
 
 function getCurrentDay() {
   const currentDate = new Date();
@@ -280,6 +298,19 @@ onMounted(() => {
   setTimeout(() => {
     getTotalsPrice();
   }, 2000);
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entrie => {
+      if (entrie.isIntersecting) {
+        loadMore();
+      }
+    });
+  },
+    {
+      rootMargin: "-250px 0px 0px 0px"
+    })
+
+  observer.observe(loadMoreIntersect.value);
 });
 
 const save = () => {

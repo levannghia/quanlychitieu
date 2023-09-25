@@ -115,5 +115,6 @@ export default function useApi() {
     getById,
     removeById,
     fetchListData,
+    updateById,
   }
 }

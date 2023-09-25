@@ -7,7 +7,7 @@
     />
     <q-route-tab :to="{ name: 'category.chart' }" name="chart" icon="incomplete_circle" />
     <q-route-tab :to="{ name: 'home' }" name="home" icon="home" />
-    <q-route-tab name="movies" icon="movie" />
+    <q-route-tab :to="{name: 'category.note'}" name="movies" icon="description" />
   </q-tabs>
 </template>
 
