@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="q-pa-md">
-      <q-list bordered separator v-for="(item, index) in listUniqueDate" :key="index">
+      <q-list v-for="(item, index) in listUniqueDate" :key="index">
         <transition-group appear enter-active-class="animated fadeIn slow" leave-active-class="animated fadeOut slow">
           <q-card class="q-mb-md" flat bordered :key="index">
             <q-item>
@@ -87,18 +87,24 @@
           </q-card>
         </transition-group>
       </q-list>
-
+      <div class="text-center">
+        <q-spinner v-if="loading"
+        color="primary"
+        size="3em"
+      />
+      </div>
+      <div ref="loadMoreIntersect"></div>
     </div>
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn :to="{ name: 'note.create' }" fab icon="add" color="primary" />
     </q-page-sticky>
   </q-page>
-  <div ref="loadMoreIntersect"></div>
+
 </template>
 
 <script setup>
 import useAuthUser from "src/composables/useAuthUser";
-import { computed, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import useSupabase from "src/boot/supabase";
 import useNotify from "src/composables/useNotify";
 import { useRouter } from "vue-router";
@@ -108,11 +114,12 @@ const { user } = useAuthUser();
 const { notifyError, notifySuccess } = useNotify();
 const { supabase } = useSupabase();
 // const virtualListDate = ref(null);
+const loading = ref(false);
 const loadMoreIntersect = ref(null)
 const dateNow = ref("");
 const totalsPrice = ref(0);
 const numberPage = ref(0);
-const sizePage = ref(7);
+const sizePage = ref(4);
 const listUniqueDate = ref([]);
 getCurrentDay();
 const filterDate = ref({
@@ -203,8 +210,6 @@ const getListDate = async (page, size) => {
 //   }, 1000);
 // }
 
-getListDate(numberPage.value, sizePage.value);
-
 // const onVirtualScroll = ({ index }) => {
 //   numberPage.value++;
 //   setTimeout(() => {
@@ -213,15 +218,16 @@ getListDate(numberPage.value, sizePage.value);
 // };
 
 async function loadMore() {
-  numberPage.value++;
   let timeout = null;
+  loading.value = true
   if(timeout){
     clearTimeout(timeout);
   }
-
   timeout = setTimeout(async () => {
+    numberPage.value++;
     await getListDate(numberPage.value, sizePage.value);
-  },1500)
+    loading.value = false
+  },2000)
 }
 
 function getCurrentDay() {
@@ -294,11 +300,12 @@ const getTotalsPrice = async () => {
   }
 };
 
+getListDate(numberPage.value, sizePage.value);
+
 onMounted(() => {
   setTimeout(() => {
     getTotalsPrice();
-  }, 2000);
-
+  }, 2500);
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entrie => {
       if (entrie.isIntersecting) {

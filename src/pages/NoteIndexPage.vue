@@ -28,9 +28,9 @@
               <q-item-label>{{ note.description }}</q-item-label>
             </q-item-section>
 
-            <!-- <q-item-section side>
-              <q-icon name="delete" color="red" @click="console.log('Test');"/>
-            </q-item-section> -->
+            <q-item-section side>
+              <q-icon name="delete" color="red" @click.stop.prevent="handleRemoveNote(note)"/>
+            </q-item-section>
           </q-item>
         </q-list>
       </div>
@@ -45,11 +45,13 @@ import useApi from "src/composables/useApi";
 import useNotify from "src/composables/useNotify";
 import useAuthUser from "src/composables/useAuthUser";
 import useSupabase from "src/boot/supabase";
+import { useQuasar } from 'quasar';
 
 const { user } = useAuthUser();
-const { fetchListData, updateById } = useApi();
+const { fetchListData, updateById, removeById } = useApi();
 const { notifyError, notifySuccess } = useNotify()
 const { supabase } = useSupabase()
+const $q = useQuasar();
 const categoryStore = useCategoryStore();
 const table = 'writes';
 const listNotes = ref([]);
@@ -104,10 +106,27 @@ const handleListNote = async () => {
   }
 };
 
+const handleRemoveNote = async (note) => {
+  try {
+    $q.dialog({
+      title: 'Xác nhận',
+      message: `Bạn muốn xóa ghi chú này?`,
+      cancel: true,
+      persistent: true
+    }).onOk(async () => {
+      await removeById(table, note.id)
+      handleListNote()
+    })
+  } catch (error) {
+    notifyError(error.message)
+  }
+}
+
 async function handleCheckNote(note) {
   try {
     form.value.id = note.id
     form.value.type = note.type
+    form.value.description = note.description
     let res = await updateById(table, form.value);
   } catch (error) {
     notifyError(error.message);
